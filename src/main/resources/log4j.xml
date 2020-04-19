@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- status=debug 可以查看log4j的装配过程 -->
+<configuration status="debug">
+    <properties>
+        <property name="LOG_HOME">D:\xiaofei_log</property>
+        <property name="FILE_NAME">xiaofei</property>
+    </properties>
+    <appenders>
+        <!-- 定义控制台输出 -->
+        <Console name="Console" target="SYSTEM_OUT" follow="true">
+            <PatternLayout pattern="%date{yyyy-MM-dd HH:mm:ss.SSS} %level [%thread][%file:%line] - %msg%n" />
+        </Console>
+        <!-- 程序员调试日志 -->
+        <RollingRandomAccessFile name="DevLog" fileName="${LOG_HOME}/${FILE_NAME}.log"
+                                 filePattern="${LOG_HOME}/$${date:yyyy-MM}/${FILE_NAME}-%d{yyyy-MM-dd}.log.gz">
+            <PatternLayout pattern="%date{yyyy-MM-dd HH:mm:ss.SSS} %level [%thread][%file:%line] - %msg%n" />
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+                <SizeBasedTriggeringPolicy size="100 MB" />
+            </Policies>
+        </RollingRandomAccessFile>
+    </appenders>
+    <loggers>
+        <!-- TRACE < DEBUG < INFO < WARN < ERROR < FATAL -->
+        <logger name="com.yqh.olb.util" level="debug" additivity="true">
+            <appender-ref ref="DevLog" />
+        </logger>
+        <!-- Root Logger -->
+        <root level="debug">
+            <appender-ref ref="Console" />
+            <appender-ref ref="DevLog" />
+        </root>
+    </loggers>
+</configuration>

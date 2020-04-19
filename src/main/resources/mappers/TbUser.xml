@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="cn.muchenlou.practicepro.mapper.TbUserMapper" >
+	<resultMap id="tbUser" type="cn.muchenlou.practicepro.entity.TbUser">
+		<result column="id"  property="id"/>
+		<result column="user_name"  property="userName"/>
+		<result column="password"  property="password"/>
+		<result column="new_time"  property="newTime"/>
+		<result column="phone"  property="phone"/>
+	</resultMap>
+
+	<!-- 根据条件去查询对应的用户 -->
+	<select id="selectUser" resultMap="tbUser">
+		select * from tb_user where 1 = 1
+		<if test="id != null and id != ''">
+			and id = #{id}
+		</if>
+		<if test="phone != null and id != ''">
+			and phone = #{phone}
+		</if>
+		<if test="password != null and password != ''">
+			and password = #{password}
+		</if>
+	</select>
+
+	<!-- 新增用户 -->
+	<insert id="add" parameterType="cn.muchenlou.practicepro.entity.TbUser">
+		insert into tb_user(`user_name`,`password`,`new_time`,`phone`)values(#{userName},#{password},#{newTime},#{phone})
+	</insert>
+</mapper>
