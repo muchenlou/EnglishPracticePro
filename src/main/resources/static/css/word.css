@@ -1,0 +1,33 @@
+.login{
+	/* height: 250px; */
+	min-height:150px;
+	background-color: #FFFFFF;
+	/* padding-left: 50px; */
+	border: 1px solid #d8dee2;
+	border-radius:5px;
+}
+.logo{
+	font-size: 20px;
+	text-align:center;
+}
+.sumDiv{
+	width: 500px;
+	margin: 0 auto;
+}
+.form_input_class{
+	width: 200px;
+}
+
+.big{
+	width: 300px;
+	height: 400px;
+	margin: 0 auto;
+}
+.classButton{
+	width: 350px;
+	margin:0 auto;
+	padding-bottom: 5px;
+}
+.search{
+	margin-top: 5px;
+}

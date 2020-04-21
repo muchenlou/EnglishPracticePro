@@ -29,19 +29,23 @@ public class ShiroConfig {
         shiroFilterFactoryBean.setSecurityManager(securityManager);
         //setLoginUrl 如果不设置值，默认会自动寻找Web工程根目录下的"/login.jsp"页面 或 "/login" 映射
         shiroFilterFactoryBean.setLoginUrl("/login");
+        //设置登录成功跳转页面
+//        shiroFilterFactoryBean.setSuccessUrl("/index");
         // 设置无权限时跳转的 url;
         shiroFilterFactoryBean.setUnauthorizedUrl("/notRole");
         // 设置拦截器
         Map<String, String> filterChainDefinitionMap = new LinkedHashMap<>();
         // <!-- authc:所有url都必须认证通过才可以访问; anon:所有url都都可以匿名访问-->
 
-        filterChainDefinitionMap.put("/login", "anon");//登录
+        filterChainDefinitionMap.put("/login", "anon");//登录页面
         filterChainDefinitionMap.put("/signIn", "anon");//注册
-//        filterChainDefinitionMap.put("/", "anon");
-//        filterChainDefinitionMap.put("/api/**", "anon");
+        filterChainDefinitionMap.put("/userLogin", "anon");//登录
+        //放开静态资源
+        // 配置不会被拦截的链接 从上向下顺序判断
+        filterChainDefinitionMap.put("/css/**", "anon");
+        filterChainDefinitionMap.put("/js/**", "anon");
+        filterChainDefinitionMap.put("/img/**", "anon");
 
-//        filterChainDefinitionMap.put("/admin/**", "authc");
-//        filterChainDefinitionMap.put("/user/**", "authc");
         //主要这行代码必须放在所有权限设置的最后，不然会导致所有 url 都被拦截 剩余的都需要认证
         filterChainDefinitionMap.put("/**", "authc");
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
@@ -61,11 +65,11 @@ public class ShiroConfig {
         CustomRealm customRealm = new CustomRealm();
         return customRealm;
     }
-
-    @Bean
-    public LifecycleBeanPostProcessor lifecycleBeanPostProcessor() {
-        return new LifecycleBeanPostProcessor();
-    }
+//
+//    @Bean
+//    public LifecycleBeanPostProcessor lifecycleBeanPostProcessor() {
+//        return new LifecycleBeanPostProcessor();
+//    }
 
     /**
      * *
@@ -74,20 +78,20 @@ public class ShiroConfig {
      * 配置以下两个bean(DefaultAdvisorAutoProxyCreator(可选)和AuthorizationAttributeSourceAdvisor)即可实现此功能
      * * @return
      */
-    @Bean
-    @DependsOn({"lifecycleBeanPostProcessor"})
-    public DefaultAdvisorAutoProxyCreator advisorAutoProxyCreator() {
-        DefaultAdvisorAutoProxyCreator advisorAutoProxyCreator = new DefaultAdvisorAutoProxyCreator();
-        advisorAutoProxyCreator.setProxyTargetClass(true);
-        return advisorAutoProxyCreator;
-    }
+//    @Bean
+//    @DependsOn({"lifecycleBeanPostProcessor"})
+//    public DefaultAdvisorAutoProxyCreator advisorAutoProxyCreator() {
+//        DefaultAdvisorAutoProxyCreator advisorAutoProxyCreator = new DefaultAdvisorAutoProxyCreator();
+//        advisorAutoProxyCreator.setProxyTargetClass(true);
+//        return advisorAutoProxyCreator;
+//    }
 
-    @Bean
-    public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor() {
-        AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor = new AuthorizationAttributeSourceAdvisor();
-        authorizationAttributeSourceAdvisor.setSecurityManager(securityManager());
-        return authorizationAttributeSourceAdvisor;
-    }
+//    @Bean
+//    public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor() {
+//        AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor = new AuthorizationAttributeSourceAdvisor();
+//        authorizationAttributeSourceAdvisor.setSecurityManager(securityManager());
+//        return authorizationAttributeSourceAdvisor;
+//    }
 
 
 }

@@ -45,7 +45,6 @@ public class CustomRealm  extends AuthorizingRealm {
         System.out.println("-------身份认证方法--------");
         String userName = (String) token.getPrincipal();
         String userPwd = new String((char[]) token.getCredentials());
-        //TODO 根据用户名从数据库获取密码
         TbUser user = userService.selectUserByPhoneAndPassword(userName, userPwd);
 
         if (userName == null) {

@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html  xmlns:th="http://www.thymeleaf.org" >
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>单词列表</title>
+		<link href="/css/bootstrap.min.css" rel="stylesheet">
+		<link rel="stylesheet" href="/css/word.css" type="text/css" />
+		<link rel="stylesheet" href="/css/all.css" type="text/css" />
+		<!-- Bootstrap -->
+		<!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" rel="stylesheet"> -->
+	</head>
+	<style>
+
+	</style>
+
+<body class="backdrop">
+<div style="margin-top: 10%;" class="sumDiv">
+	<div>
+		<p class="logo">欢迎来到沐小肥英语练习基地</p>
+	</div>
+	<div class="login">
+		<!-- <div style="height: 40px;"></div> -->
+		<div>
+			<div><p style="text-align: center;font-size: 20px;" th:if="${words.size()==0}">你目前还有录入对应内容哦</p></div>
+			<div class="form-inline search">
+
+					<div class="form-group">
+						<label>关键字</label>
+						<input type="text" class="form-control" id="search" th:value="${search}" placeholder="输入对于的中文/英文">
+					</div>
+					<button type="submit" class="btn btn-default" onclick="search1()">Search</button>
+
+			</div>
+			<div>
+				<table class="table table-hover" th:if="${words.size()!=0}">
+					<thead><td>#</td><td>英文单词</td><td>中文翻译</td><td>操作</td></thead>
+					<tbody>
+					<tr th:each="word:${words}"><td>#</td><td th:text="${word.englishWord}">英文单词</td>
+						<td th:text="${word.chinaWord}">中文翻译</td><td>
+							<a th:name="${word.id}" onclick="edit(this)">编辑</a>
+							<a th:name="${word.id}" onclick="dele(this)">删除</a>
+							<a th:name="${word.id}" onclick="yidu(this)" th:if="${word.isStatus == 1}">已会</a>
+							<a th:name="${word.id}" onclick="yidu2(this)" th:if="${word.isStatus == 2}">取消</a>
+						</td></tr>
+					</tbody>
+				</table>
+			</div>
+			<!-- Standard button -->
+			<div class="classButton">
+			<button type="button" class="btn btn-default btn-sm" onclick="up1()">上一页</button>
+			<button type="button" class="btn btn-default btn-sm" onclick="down()">下一页</button>
+			<button type="button" class="btn btn-default btn-sm" th:name="${classifyId}" onclick="add(this)">添加单词</button>
+			<button type="button" class="btn btn-default btn-sm" th:name="${classifyId}" onclick="shangyiye(this)">返回分类</button>
+<!--			<button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target=".bs-example-modal-sm" th:name="${classifyId}" onclick="open1(this)">开始练习</button>-->
+			<button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target=".bs-example-modal-sm" th:name="${classifyId}">开始练习</button>
+            <input type="hidden" id="page" th:value="${page}"/>
+            <input type="hidden" id="size" th:value="${size}"/>
+            <input type="hidden" id="nowPage" th:value="${nowPage}"/>
+            <input type="hidden" id="classifyId" th:value="${classifyId}"/>
+            <input type="hidden" id="count" th:value="${count}"/>
+			</div>
+		</div>
+	</div>
+<!--	<button id="Smallmodal" type="button" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-sm" style="display:none"></button>-->
+
+	<div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+		<div class="modal-dialog modal-sm" role="document">
+			<div class="modal-content" style="text-align: center;font-size: 20px;">
+				<div style="height: 300px;width: 100px">
+					<div class="form-group">
+						<label>数量</label>
+						<input type="number" class="form-control form_input_class" id="sum" placeholder="请输入数量默认60">
+					</div>
+					<div class="form-group">
+					<label>类型</label>
+					<select id="test" class="form-control form_input_class">
+						<option value ="1">最新</option>
+						<option value ="2">最旧</option>
+						<option value="3">全部</option>
+					</select>
+					</div>
+					<div class="form-group">
+					<label>练习类型</label>
+					<select id="test1" class="form-control form_input_class">
+						<option value ="1">英汉互翻译</option>
+						<option value ="2">英翻译汉</option>
+						<option value="3">汉翻译英</option>
+					</select>
+					</div>
+					<div class="form-group">
+						<label>困难模式</label>
+						<select id="test2" class="form-control form_input_class">
+							<option value ="1">否</option>
+							<option value ="2">是</option>
+						</select>
+					</div>
+					<button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target=".bs-example-modal-sm" th:name="${classifyId}" onclick="open1(this)" style="padding-left: -200px">开始练习</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+	<!-- jQuery (Bootstrap 的所有 JavaScript 插件都依赖 jQuery，所以必须放在前边) -->
+	<script src="/js/jquery.min.js"></script>
+	<!-- 加载 Bootstrap 的所有 JavaScript 插件。你也可以根据需要只加载单个插件。 -->
+	<script src="/js/bootstrap.min.js"></script>
+</body>
+	<script>
+		// $("#login").click(function(){
+		// 		var name = $("#name").val();
+		// 		var pass = $("#password").val();
+		// 		$.ajax({
+		// 			url:"user/login",
+		// 			type:'post',//HTTP请求类型
+		// 			data: {'name':name,'password':pass,'url':null},
+		// 			success:function(data){
+		// 				console.log(data);
+		// 				window.location.href="/classify/queryClassify"
+		// 			},
+		// 			error:function(xhr,type,errorThrown){
+		// 				alert("登录失败")
+		// 			}
+		// 		});
+		// 	})
+
+		//添加单词
+		function add(e) {
+
+			var classifyId = e.name;
+			window.location.href="/addWord.html?classifyId="+classifyId+"&url=/word/queryWords?classifyId=";
+		}
+
+		//编辑
+        function edit(e) {
+			window.location.href="/word/edit?wordId="+e.name+"&url=/word/queryWords?classifyId=";
+        }
+
+        //删除
+        function dele(e) {
+			var wordId = e.name;
+            $.ajax({
+                url:"/word/delect",
+                type:'post',//HTTP请求类型
+                data: {'wordId':wordId,'isStatus':-1},
+                success:function(data){
+                    if (data==1){
+                    	alert("删除成功！");
+						window.location.reload();
+					}else{
+                    	alert("删除失败，详情找小肥")
+					}
+                }
+            });
+        }
+
+        //已读
+        function yidu(e) {
+			var wordId = e.name;
+			$.ajax({
+				url:"/word/delect",
+				type:'post',//HTTP请求类型
+				data: {'wordId':wordId,'isStatus':2},
+				success:function(data){
+					if (data==1){
+						alert("已会设置成功！测试不会访问已会单词");
+						window.location.reload();
+					}else{
+						alert("设置失败，详情找小肥")
+					}
+				}
+			});
+        }
+		//已读
+		function yidu2(e) {
+			var wordId = e.name;
+			$.ajax({
+				url:"/word/delect",
+				type:'post',//HTTP请求类型
+				data: {'wordId':wordId,'isStatus':1},
+				success:function(data){
+					if (data==1){
+						alert("取消已会成功！测试将加入该单词");
+						window.location.reload();
+					}else{
+						alert("设置失败，详情找小肥")
+					}
+				}
+			});
+		}
+        function up1() {
+            var page = $("#page").val();
+            var size = $("#size").val();
+            var newPage = $("#newPage").val();
+            var classifyId = $("#classifyId").val();
+			var search = $("#search").val();
+            if (page == 0){
+                return alert("最前一页了");
+            }
+            page = page - 1;
+            if (search == ""){
+				window.location.href="/word/queryWords?classifyId="+classifyId+"&page="+page+"&size="+size+"&newPage="+newPage;
+			} else{
+				window.location.href="/word/queryWords?classifyId="+classifyId+"&page="+page+"&size="+size+"&newPage="+newPage+"&search="+search;
+			}
+        }
+        
+        function down() {
+            var page = $("#page").val();
+            var size = $("#size").val();
+            var newPage = $("#newPage").val();
+            var classifyId = $("#classifyId").val();
+			var search = $("#search").val();
+            var count = $("#count").val();
+            count = Math.ceil(count / size);
+            console.log(count)
+            if (page >= count - 1){
+                return alert("已经是最后一页了");
+            }
+            page = Number(page) + 1;
+            if (search == ""){
+				window.location.href="/word/queryWords?classifyId="+classifyId+"&page="+page+"&size="+size;
+			} else{
+				window.location.href="/word/queryWords?classifyId="+classifyId+"&page="+page+"&size="+size+"&search="+search;
+			}
+
+        }
+        
+        function open1(e) {
+			var classifyId = e.name;
+			var sum = $("#sum").val();
+			var myselect=document.getElementById("test");
+			var index=myselect.selectedIndex;
+			var type = myselect.options[index].value;
+			var myselect1=document.getElementById("test1");
+			var index1=myselect1.selectedIndex;
+			var type1 = myselect1.options[index1].value;
+			var myselect2=document.getElementById("test2");
+			var index2=myselect1.selectedIndex;
+			var type2 = myselect1.options[index2].value;
+			window.open("/word/englishPractice?classifyId="+classifyId+"&sum="+sum+"&type="+type+"&type1="+type1+"&type2="+type2,"_blank");
+		}
+
+		/**
+		 * 搜索
+		 */
+		function search1() {
+			var search = $("#search").val();
+			var classifyId = $("#classifyId").val();
+			if (search == ''){
+				window.location.href="/word/queryWords?classifyId="+classifyId;
+			}else{
+				window.location.href="/word/queryWords?classifyId="+classifyId+"&search="+search;
+			}
+		}
+
+		/**
+		 * 返回上一页
+		 */
+		function shangyiye(e){
+			window.location.href="/classify/queryClassify"
+		}
+	</script>
+</html>

@@ -35,7 +35,7 @@ public class HomeIndexController {
      * @param password
      * @return
      */
-    @PostMapping("/login")
+    @PostMapping("/userLogin")
     public Result selectUser(@RequestParam String phone, @RequestParam String password, HttpServletRequest request){
         // 从SecurityUtils里边创建一个 subject
         Subject subject = SecurityUtils.getSubject();

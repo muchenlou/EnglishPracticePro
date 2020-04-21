@@ -82,6 +82,13 @@
             <artifactId>shiro-spring</artifactId>
             <version>1.4.0</version>
         </dependency>
+
+        <!-- thymeleaf -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+            <version>2.2.0.RELEASE</version>
+        </dependency>
     </dependencies>
 
     <build>
